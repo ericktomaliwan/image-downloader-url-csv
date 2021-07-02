@@ -11,50 +11,45 @@ $csv = [];
 while ( ($data = fgetcsv($fp) ) !== FALSE ) {
     $csv[] = $data;
 }
-
 //echo '<pre>'; print_r($csv); echo '</pre>';
 $final_array = [];
 $i = 0;
 foreach($csv as $data){
-
+    #get category
     $explode_data = explode("_", $data[5]);
+
+    #Check for empty titles
+    $local_title = empty($data[3]) ? 'no_title_'.$explode_data[1] : $data[3];
+
+    #assign to array
     $final_array[] = array(
-        'title' => $data[3],
+        'title' =>  $local_title ,
         'url' => $data[4],
         'category' => $explode_data[0]
     );
-    //echo '<pre>'; echo $data[3];  echo '</pre>';
-    //echo '<pre>'; echo $data[4];  echo '</pre>';
-    //echo '<pre>'; echo $data[5];  echo '</pre>';
 }
+#Remove header
 array_shift($final_array);
-//echo '<pre>'; print_r($final_array);  echo '</pre>';
 
-
-/*Downfile File*/
+#Downfile File
 foreach ($final_array as $fa){
+    #assign to local variable
     $ftitle = $fa['title'];
     $furl = $fa['url'];
     $fcategory = $fa['category'];
     
+    #Get file extension
     $info = getimagesize($furl);
     $extension = image_type_to_extension($info[2]);
 
+    #print out all entries
     echo '<pre>'; print_r($fa);  echo '</pre>';
     
+    #Assign to a folder
     //copy($furl, $fcategory);
     file_put_contents($fcategory.'/'.$ftitle.$extension, file_get_contents($furl));
 
-
-
-
 }
-
-
-
-
-
-
 
 
 ?>
